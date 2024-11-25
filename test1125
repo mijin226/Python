@@ -1,0 +1,16 @@
+## csv 파일 데이터 모두 출력하기
+import csv ##csv 파일 import
+
+   file_path = "test.csv" ##파일명.csv file_path 변수 선언(카멜식 대신 _ 활용)
+
+   with open(file_path, mode='r') as file : 
+   ## with open(csv 파일명, 'r'ead or 'w'rite) as 객체명
+   ## csv 파일을 읽기모드로 열고 이를 file이라 지칭. 읽기모드로 읽으면 닫기(with)
+
+       reader = csv.reader(file) ## 자바에서는 패키지, 파이썬에서는 모듈
+       ## csv파일을 읽을 reader 객체를 활용해 file 읽을 때, 이를 reader라 지칭
+
+       for row in reader :
+       ## reader(csv파일 데이터)에서 1행씩 읽기
+
+           print(row) ## 읽어들인 1행씩 출력
