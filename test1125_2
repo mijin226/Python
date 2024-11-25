@@ -1,0 +1,17 @@
+import csv
+
+file_path = "test.csv"
+
+with open(file_path,mode='r') as file :
+    reader = csv.reader(file)
+
+    ##Dec로 시작하는(12월인) 데이터 뽑기
+    header = next(reader) 
+    
+    for row in reader :
+        b = row[4]  ## 5번째 열 일시
+        c = row[5]  ## 6번째 열 평균기온
+
+        ## 만약 일시가 12월이라면 출력하기
+        if b.startswith("Dec") : 
+           print(b,c)
