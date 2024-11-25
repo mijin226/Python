@@ -1,0 +1,15 @@
+## 특정 열 데이터 출력하기
+import csv
+file_path = "test.csv"
+
+with open(file_path, mode='r') as file :
+    reader = csv. reader(file)
+
+    ##첫 줄 읽어 넘기고 다음 행부터 출력하기
+    header = next(reader)
+
+    for row in reader :
+        a = row[8] ## 9번째 열 일자
+        b = row[4] ## 5번째 열 일시
+        c = row[5] ## 6번째 열 평균 기온
+        print(a, b, c) ## a, b, c 순으로 데이터 출력
