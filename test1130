@@ -22,15 +22,9 @@ years = []                          ##2019~2023년도(x축)
 with open(temps_file_path, mode='r') as file:
     reader = csv.reader(file)       ## CSV 파일의 내용을 읽어오는 reader 객체 생성
 
-    #8행까지 헤더로 처리(추출 비대상 데이터)
-    header = next(reader)
-    header = next(reader)        
-    header = next(reader)       
-    header = next(reader)       
-    header = next(reader)       
-    header = next(reader)       
-    header = next(reader)       
-    header = next(reader)       
+    ##첫 8행은 헤더로 처리하여 건너뛰기(추출 비대상 데이터)
+    for _ in range(8): 
+        next(reader)      
 
     ## 파일의 각 행을 순회하며 데이터 처리
     for row in reader:
