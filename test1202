@@ -1,7 +1,7 @@
 import csv                              # CSV 파일 처리를 위한 모듈
 import matplotlib.pyplot as plt         # 데이터 시각화를 위한 모듈
 import seaborn as sns                   # 시각화를 더욱 아름답게 만드는 모듈
-from matplotlib.ticker import MaxNLocator  # 축 레이블을 정렬하는 도구 
+from matplotlib.ticker import MaxNLocator  # 축 레이블을 정렬하는 도구  
 
 # 파일 경로
 temps_file_path = "ta_20241130204917.csv"        
