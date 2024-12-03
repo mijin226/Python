@@ -1,7 +1,6 @@
 import csv                              # CSV 파일 처리를 위한 모듈
 import matplotlib.pyplot as plt         # 데이터 시각화를 위한 모듈
 import seaborn as sns                   # 시각화를 더욱 아름답게 만드는 모듈
-from matplotlib.ticker import MaxNLocator  # 축 레이블을 정렬하는 도구  
 
 # 파일 경로
 temps_file_path = "ta_20241130204917.csv"        
@@ -48,7 +47,7 @@ months_sum_subways = months_sum_subways_2022 + months_sum_subways_2023
 years = list(range(1, 25))  # 1~12월(2022) + 1~12월(2023)
 
 # 3. 그래프 시각화
-sns.set(rc={"figure.figsize": (12, 8)})  # 그래프 크기 설정
+sns.set(rc={"figure.figsize": (8, 6)})  # 그래프 크기 설정
 plt.rcParams['lines.linewidth'] = 2.0   # 선 두께
 sns.set_style("white")                  # 그래프 배경 흰색
 
@@ -63,11 +62,11 @@ ax1.tick_params(axis='y', labelcolor='tab:red')
 for i, temp in enumerate(avg_temps):
     ax1.text(
         years[i],
-        temp + 0.5,
+        temp + 1,
         f'{temp:.1f}',
         ha='center',
         va='bottom',
-        fontsize=8
+        fontsize=7
     )
 
 # 오른쪽 Y축 승하차 인원 막대 그래프
@@ -81,11 +80,11 @@ for i, bar in enumerate(bars):
     height = bar.get_height()
     ax2.text(
         bar.get_x() + bar.get_width() / 2,
-        height + 0.02 * height,
+        height + 1,
         f'{height / 1_000_000:.1f}M',
         ha='center',
         va='bottom',
-        fontsize=8
+        fontsize=7
     )
 
 # x축 레이블 설정 (2022년과 2023년 구분)
@@ -97,10 +96,17 @@ plt.xticks(
     labels=x_labels * 2,  # 레이블 반복
     rotation=0  # 레이블 회전 제거
 )
+# 왼쪽 Y축 범위 설정
+ax1.set_ylim(-5, 30)
+print("왼쪽 Y축:", ax1.get_ylim())
+
+# 오른쪽 Y축 범위 설정
+ax2.set_ylim(180_000_000, 300_000_000)
+print("오른쪽 Y축:", ax2.get_ylim())
 
 # 2022와 2023을 축 하단에 구분하여 표시
-ax1.text(6.5, -7, '2022', ha='center', va='center', fontsize=12, fontweight='bold')
-ax1.text(18.5, -7, '2023', ha='center', va='center', fontsize=12, fontweight='bold')
+ax1.text(6.5, -10, '2022', ha='center', va='center', fontsize=12, fontweight='bold')
+ax1.text(18.5, -10, '2023', ha='center', va='center', fontsize=12, fontweight='bold')
 
 # 그래프 제목 설정
 plt.title('Monthly Average Temperature and Subway Passengers (2022-2023)')
