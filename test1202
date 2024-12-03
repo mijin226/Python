@@ -1,0 +1,110 @@
+import csv                              # CSV 파일 처리를 위한 모듈
+import matplotlib.pyplot as plt         # 데이터 시각화를 위한 모듈
+import seaborn as sns                   # 시각화를 더욱 아름답게 만드는 모듈
+from matplotlib.ticker import MaxNLocator  # 축 레이블을 정렬하는 도구
+
+# 파일 경로
+temps_file_path = "ta_20241130204917.csv"        
+subway_file_paths = ["서울교통공사_월별 승하차인원_20231231.csv", "서울교통공사_월별 승하차인원_20221231.csv"]
+
+# 데이터 초기화
+avg_temps_2022 = []  # 2022년도 평균 기온
+avg_temps_2023 = []  # 2023년도 평균 기온
+months_sum_subways_2022 = [0] * 12  # 2022년도 승하차 인원
+months_sum_subways_2023 = [0] * 12  # 2023년도 승하차 인원
+
+# 1. 기온 데이터 처리
+with open(temps_file_path, mode='r') as file:
+    reader = csv.reader(file)
+    for _ in range(8):  # 헤더 건너뛰기
+        next(reader)
+    for row in reader:
+        year_month = row[0]  # 'yy-mm' 형태의 날짜
+        avg_temp = float(row[2])  # 평균 기온
+        if year_month.startswith('22-'):  # 2022년도
+            avg_temps_2022.append(avg_temp)
+        elif year_month.startswith('23-'):  # 2023년도
+            avg_temps_2023.append(avg_temp)
+
+# 2. 승하차 인원 데이터 처리
+for file_path in subway_file_paths:
+    with open(file_path, mode='r') as file:
+        reader = csv.reader(file)
+        next(reader)  # 헤더 건너뛰기
+        for row in reader:
+            month = int(row[4][5:7]) - 1  # 'yyyy-mm-dd'에서 월 추출
+            try:
+                passengers = int(row[5])  # 승하차 인원
+            except ValueError:
+                continue
+            if "2022" in file_path:
+                months_sum_subways_2022[month] += passengers
+            elif "2023" in file_path:
+                months_sum_subways_2023[month] += passengers
+
+# 데이터 병합
+avg_temps = avg_temps_2022 + avg_temps_2023
+months_sum_subways = months_sum_subways_2022 + months_sum_subways_2023
+years = list(range(1, 25))  # 1~12월(2022) + 1~12월(2023)
+
+# 3. 그래프 시각화
+sns.set(rc={"figure.figsize": (12, 8)})  # 그래프 크기 설정
+plt.rcParams['lines.linewidth'] = 2.0   # 선 두께
+sns.set_style("white")                  # 그래프 배경 흰색
+
+fig, ax1 = plt.subplots()
+
+# 평균 기온 꺾은선 그래프 (왼쪽 Y축)
+ax1.plot(years, avg_temps, marker='o', color='tab:red', label='Avg Temperature', zorder=10)
+ax1.set_ylabel('Average Temperature (°C)', color='tab:red')
+ax1.tick_params(axis='y', labelcolor='tab:red')
+
+# 평균 기온 값 표시
+for i, temp in enumerate(avg_temps):
+    ax1.text(
+        years[i],
+        temp + 0.5,
+        f'{temp:.1f}',
+        ha='center',
+        va='bottom',
+        fontsize=8
+    )
+
+# 오른쪽 Y축 승하차 인원 막대 그래프
+ax2 = ax1.twinx()
+bars = ax2.bar(years, months_sum_subways, alpha=0.6, color='tab:green', label='Subway Passengers', width=0.8, zorder=0)  # zorder 낮게 설정
+ax2.set_ylabel('Subway Passengers (Millions)', color='tab:blue')
+ax2.tick_params(axis='y', labelcolor='tab:blue')
+
+# 승하차 인원 값 표시
+for i, bar in enumerate(bars):
+    height = bar.get_height()
+    ax2.text(
+        bar.get_x() + bar.get_width() / 2,
+        height + 0.02 * height,
+        f'{height / 1_000_000:.1f}M',
+        ha='center',
+        va='bottom',
+        fontsize=8
+    )
+
+# x축 레이블 설정 (2022년과 2023년 구분)
+years_2022 = list(range(1, 13))  # 2022년도
+years_2023 = list(range(13, 25))  # 2023년도
+x_labels = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']  # 월
+plt.xticks(
+    ticks=years_2022 + years_2023,  # 전체 x축 위치
+    labels=x_labels * 2,  # 레이블 반복
+    rotation=0  # 레이블 회전 제거
+)
+
+# 2022와 2023을 축 하단에 구분하여 표시
+ax1.text(6.5, -7, '2022', ha='center', va='center', fontsize=12, fontweight='bold')
+ax1.text(18.5, -7, '2023', ha='center', va='center', fontsize=12, fontweight='bold')
+
+# 그래프 제목 설정
+plt.title('Monthly Average Temperature and Subway Passengers (2022-2023)')
+
+# 그래프 출력
+fig.tight_layout()
+plt.show()
