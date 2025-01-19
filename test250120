@@ -1,0 +1,105 @@
+1.변수 네이밍 규칙
+ - 영문 문자와 숫자 사용 가능
+ - 대소문자 구분
+ - 문자부터 시작, 숫자는 불가
+ - _(언더스코어) 사용 가능
+ - 특수문자(+,-,*,/,$,@,&%) 사용 불가
+
+​
+Python 3.13.0 (tags/v3.13.0:60403a5, Oct  7 2024, 09:38:07) [MSC v.1941 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license()" for more information.
+
+a=16             //1번 네이밍
+_b=3.14          //2번 네이밍
+2c=int(80)       //3번 네이밍
+SyntaxError: invalid decimal literal
+_7d=float(5.14)  //4번 네이밍
+
+print(_b+_7d)    //2,4번 출력 여부 확인
+8.28             //3.14+5.14=8.28 확인
+
+ 
+* 3번 네이밍(2c = int(80))의 경우 SyntaxError가 발생함을 확인할 수 있다.
+* 문법 오류: 잘못된 10진수 리터럴(SyntaxError: invalid decimal literal)
+* 문법 규칙에 의거하여, 변수명을 문자로 규정하기 위해 2c를 c로 변경한다.
+=> c=int(80)으로 설정하여 a와 더하면 96의 정상적인 값이 도출됨을 확인할 수 있다.
+
+
+
+
+1. 할당 및 비교(f-string과 format()메서드, ==와 is 차이 / 연산자 활용)
+  * 연산 출력 방식
+    x=15
+    y=25
+
+    print("x is y: " + str(x == y))  # + 연산자로 문자열과 결과를 결합
+    print("x is y: {}".format(x == y))  # format()을 사용해 결과 삽입
+    print(f"x is y: {x == y}")  # f-string으로 결과 삽입
+
+    console
+    x is y, False
+
+
+    1) f-string(formmatted string literals)
+      (1) 문자열 앞에 f 작성
+      (2) 포괄할 문자열에 ''기재
+      (3) 문자열 내 들어갈 변수 중괄호{}를 활용하여 변수의 결과값 삽입
+        - 장점 : 가독성이 높고 성능 우수
+      
+        name = "Alice"
+        age = 25
+
+        ## f-string 사용
+        print(f"My name is {name} and I am {age} years old.")
+
+    2) format() 메서드
+      (1) 문자열 내 변수 혹은 값이 들어갈 자리에 { } 표시
+      (2) { }에 들어갈 변수 혹은 값을 문자열, 뒤 format( )메서드에 기재
+      (3) format( ) 메서드에서 값을 문자열에게 전달함.
+        - 변수 순서 지정 혹은 키워드로 인수값 전달 가능 => 정확한 키워드 및 인수를 오기입할 시, 에러 우려 높음
+      
+        name = "Alice"
+        age = 25
+
+        ## format() 사용
+        print("My name is {} and I am {} years old.".format(name, age))
+
+        ## 인덱스 사용
+        print("My name is {0} and I am {1} years old. {0} is a great name.".format(name, age))
+
+        ## 키워드 인수 사용
+        print("My name is {name} and I am {age} years old.".format(name=name, age=age))
+
+        ## console
+        My name is Alice and I am 25 years old. Alice is a great name.
+        My name is Alice and I am 25 years old.
+
+
+  * c-d관계 vs d-e관계의 차이 (== 값 비교와 is 참조 비교 차이(object가 같아야 함))
+    - c와 d, e 모두 10, 20, 30을 지닌다 점은 동일 (== true)
+    - d는 c를 참조하기에 참조 객체가 동일 (is true)
+    - e는 c와 d 동일한 값을 지니나, 새롭게 선언한 값이므로, 참조 객체가 다름(is false)
+
+    c=[ 10, 20, 30 ]  
+    d=c   
+    print(f'c==d, {c==d}')
+      
+    c==d, True
+
+    print(f'c value, id : {c}, {hex(id(c))}')
+    c value, id : [10, 20, 30], 0x13ff6e5d540
+
+    print(f'd value, id : {d}, {hex(id(d))}')
+    d value, id : [10, 20, 30], 0x13ff6e5d540
+
+
+    e=[ 10, 20, 30]
+      
+    print(f'e value, id : {e}, {hex(id(e))}')      
+    e value, id : [10, 20, 30], 0x13ff6e6bb40
+
+    print(f'd==e, {d==e}')
+    d==e, True
+
+    print(f'd is e, {d is e}')      
+    d is e, False
